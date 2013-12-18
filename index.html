@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Finite State Machine</title>
+    <script src="../vendor/amber/support/amber.js"></script>
+    <script src="../vendor/amber/support/requirejs/require.min.js"></script>
+    <script type="text/javascript">
+      require.config({ paths: {
+        'fsm': 'js', //mapping compiled .js files
+        'fsm/_source': 'st' //mapping smalltalk source files
+      }});
+
+      require(['amber/devel'], function (smalltalk) {
+        window.onbeforeunload = function() {
+              return 'Do you really want to close?';
+            };
+        smalltalk.defaultAmdNamespace = "fsm";
+        smalltalk.initialize();
+
+        $(function() {
+          // smalltalk.Clock._begin();
+          
+          // smalltalk.Tutor._begin()
+          require('amber_vm/smalltalk').Browser._open()
+  
+        })
+      });
+    </script>
+  </head>
+  <body>
+    <div id='tutor'></div>
+  </body>
+</html>
