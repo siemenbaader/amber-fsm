@@ -10,7 +10,7 @@
         'fsm/_source': 'st' //mapping smalltalk source files
       }});
 
-      require(['amber/devel'], function (smalltalk) {
+      require(['amber/devel', 'fsm/FSM'], function (smalltalk) {
         window.onbeforeunload = function() {
               return 'Do you really want to close?';
             };
