@@ -1,32 +1,31 @@
 Smalltalk current createPackage: 'FSM'!
-Object subclass: #FSM
-	instanceVariableNames: ''
-	package: 'FSM'!
-!FSM commentStamp!
-| backendConnection  it |
-backendConnection := FSM new.
-it := backendConnection .
-
-it when: 'idle' ;  on: 'connect' do: [...] ; on: 'close' do: [..] ; on: 'send' do: []; on: 'data' do: [..] ;
-it when 'connecting' ;
-		on: 'connect' do: [...] ; on: 'close' do: [..].
-it when 'closing' ;
-		                                                                 on: 'send' do: []; on: 'data' do: [..] .
-it when 'lost' ;
-		on: 'connect' do: [...] ; on: 'close' do: [..] ; on: 'send' do: []; on: 'data' do: [..] .
-
-
-backendConnection trigger: 'connect'
-
-
-
-stateTable                    on: 'connect' ; on: 'foo'; on: 'bar' ;
-when: 'idle'                   do: [. 'idle' ]   ; do: [ 4 + 7   ]
-when: 'connecting' ;     do: [ ]!
-
 Object subclass: #StateMachine
 	instanceVariableNames: 'currentState stateTable assigningState'
 	package: 'FSM'!
+!StateMachine commentStamp!
+A Finite State Machine Example. 
+
+| door |
+
+door := (StateMachine new) 
+	when: 'closed' ;
+		on: 'open' do: [window alert: 'opening'. 'open' ] ;
+		on: 'lock' do: [window alert: 'locked door.'. 'locked'] ;
+		on: 'unlock' do: [window alert: 'already unlocked'. 'closed' ] ;
+		on: 'close' do: [window alert: 'already closed'. 'closed'] ;
+		
+	when: 'locked' ;
+		on: 'open' do: [window alert: 'Door is locked, sorry'. 'locked' ] ;
+	
+	initialState: 'closed' ;
+	
+	yourself.
+	
+window alert: 'Door is ', door state.
+	
+door trigger: 'lock' ; trigger: 'open'; trigger: 'unlock'.
+
+window alert: 'Door is ', door state.!
 
 !StateMachine methodsFor: 'not yet classified'!
 
@@ -48,7 +47,12 @@ state
 !
 
 trigger: anEvent
-	currentState := ((stateTable at: currentState) at: anEvent) value.
+	| targetState |
+	
+	targetState := ((stateTable at: currentState) at: anEvent) value.
+	(stateTable keys includes: targetState) 
+		ifTrue: [ currentState := targetState ]
+		ifFalse: [ Object throw: 'Block returned ''', targetState asString, ''', but must return one of the valid states configured by #when.']
 !
 
 when: aState
